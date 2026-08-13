@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/thekevinc/job-search-source-cache/main/employer_sources.schema.json",
+  "title": "Job search employer source cache",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "updated_at", "retention_days", "sources"],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "updated_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "retention_days": {
+      "const": 90
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "company",
+        "type",
+        "first_discovered_at",
+        "last_checked_at",
+        "last_relevant_listing_at",
+        "active_until",
+        "consecutive_failures"
+      ],
+      "properties": {
+        "company": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "enum": ["greenhouse", "lever", "ashby"]
+        },
+        "board": {
+          "type": "string",
+          "minLength": 1
+        },
+        "site": {
+          "type": "string",
+          "minLength": 1
+        },
+        "first_discovered_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "last_checked_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "last_relevant_listing_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "active_until": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "consecutive_failures": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "lever"
+              }
+            }
+          },
+          "then": {
+            "required": ["site"]
+          },
+          "else": {
+            "required": ["board"]
+          }
+        }
+      ]
+    }
+  }
+}
