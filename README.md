@@ -1,7 +1,9 @@
 # Job Search Source Cache
 
 This repository is a public, non-personal cache of canonical employer job-board
-sources discovered by an automated job search.
+sources. A daily GitHub Action discovers ATS links in public GitHub content,
+validates their public job feeds, and refreshes this file without third-party
+hosting or API keys.
 
 The cache is intentionally limited to public ATS metadata. It must not contain
 applicant identity, search criteria, compensation requirements, job matches,
@@ -22,6 +24,18 @@ application history, reports, email addresses, credentials, or secrets.
 
 Consumers must validate the file against `employer_sources.schema.json`, ignore
 expired entries, and treat a missing or invalid cache as an empty source list.
+
+## Refresh workflow
+
+`.github/workflows/refresh-sources.yml` runs daily and can also be dispatched
+manually. It uses the repository-scoped `GITHUB_TOKEN` supplied automatically by
+GitHub Actions. No personal access token, OpenAI API key, or hosted database is
+required.
+
+Discovery is intentionally broad and generic. Candidate Greenhouse, Lever, and
+Ashby board identifiers are extracted from public GitHub code search results.
+Only boards with a current software-engineering listing enter the cache. Existing
+boards remain for 90 days after their last relevant listing.
 
 ## Retention
 
